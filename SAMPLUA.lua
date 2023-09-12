@@ -19,6 +19,8 @@ local msg = function(text)
     sampAddChatMessage('[ArenaHelper] {fff0f5}'..text, 0xFFCD5C5C)
 end
 
+update = false
+
 local cfg = inicfg.load({
   config = {
      AutoUpdate = 1,
