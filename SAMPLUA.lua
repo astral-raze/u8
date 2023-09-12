@@ -9,10 +9,6 @@ local inicfg = require "inicfg"
 local sampev = require 'lib.samp.events'
 local rkeys = require 'rkeys'
 local dlstatus = require('moonloader').download_status
-local encoding = require 'encoding'
-encoding.default = 'cp1251'
-local u8 = encoding.UTF8
-local function recode(u8) return encoding.UTF8:decode(u8) end
 local fa = require 'faIcons'
 local fonts = renderCreateFont("Arial", 9, 5)
 
@@ -139,10 +135,10 @@ function imgui.OnDrawFrame()
       imgui.SetNextWindowSize(imgui.ImVec2(700, 500), imgui.Cond.FirstUseEver) 
       imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 2, sizeY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
-      imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
-    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
-    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
-    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+      imgui.Text('ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+    imgui.Text('ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+    imgui.Text('ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+    imgui.Text('ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
         imgui.Text(u8'СЛЕТ БЕБРЫ ПО ГОССУ')
       imgui.End()
     end
