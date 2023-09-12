@@ -7,6 +7,7 @@ local imgui = require 'imgui'
 local inicfg = require 'inicfg'
 local sampev = require 'lib.samp.events'
 local vkeys = require 'vkeys'
+local dlstatus = require('moonloader').download_status
 local bNotf, notf = pcall(import, "imgui_notf.lua")
 local encoding = require 'encoding'
 encoding.default = 'CP1251'
