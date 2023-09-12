@@ -11,7 +11,6 @@ u8 = encoding.UTF8
 local main_window_state = imgui.ImBool(false)
 local sizeX, sizeY = getScreenResolution()
 
-unpade = true
 
 function autoupdate(json_url, prefix, url)
   local dlstatus = require('moonloader').download_status
