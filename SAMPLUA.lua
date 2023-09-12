@@ -1,5 +1,5 @@
 script_name("Ghetto Helper")
-script_version("1.0")
+script_version("1.1")
 
 local imgui = require 'imgui'
 local imadd = require 'imgui_addons'
