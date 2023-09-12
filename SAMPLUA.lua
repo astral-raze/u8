@@ -22,7 +22,7 @@ end
 local cfg = inicfg.load({
   config = {
      AutoUpdate = 1,
-     CommandAct = 'gh',
+     CommandAct = 'banana',
   }
 })
 
