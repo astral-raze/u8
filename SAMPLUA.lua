@@ -45,7 +45,7 @@ local cfg = inicfg.load({
     }
   })
 
-function autoupdate(json_url, prefix, url)
+function autoupdate(json_url, prefix, url) --1
     lua_thread.create(function()
         local dlstatus = require('moonloader').download_status
         local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
