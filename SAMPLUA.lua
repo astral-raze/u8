@@ -1,12 +1,23 @@
 script_name("SAMPLUA")
 script_version("1.00")
 
-local sampev = require 'lib.samp.events'
 local imgui = require 'imgui'
-local inicfg = require 'inicfg'
+local imadd = require 'imgui_addons'
+imgui.ToggleButton = require('imgui_addons').ToggleButton
+local imadd = require("imgui_addons")
+local inicfg = require "inicfg"
+local sampev = require 'lib.samp.events'
+local rkeys = require 'rkeys'
+local dlstatus = require('moonloader').download_status
 local encoding = require 'encoding'
 encoding.default = 'CP1251'
 u8 = encoding.UTF8
+local fa = require 'faIcons'
+local fonts = renderCreateFont("Arial", 9, 5)
+
+local msg = function(text)
+    sampAddChatMessage('[ArenaHelper] {fff0f5}'..text, 0xFFCD5C5C)
+end
 
 local cfg = inicfg.load({
   config = {
@@ -125,6 +136,8 @@ function imgui.OnDrawFrame()
       imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 2, sizeY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
       imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
     imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
       imgui.End()
     end
