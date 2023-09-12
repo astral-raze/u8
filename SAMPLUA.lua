@@ -54,11 +54,6 @@ function autoupdate(json_url, prefix, url)
                       function(id3, status1, p13, p23)
                       if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
                           print(string.format('Загружено %d из %d.', p13, p23))
-                      elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                          print('Загрузка обновления завершена.')
-                          msg('Обновление завершено!')
-                          goupdatestatus = true
-                          lua_thread.create(function() wait(500) thisScript():reload() end)
                       end
                       if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                           if goupdatestatus == nil then
@@ -127,6 +122,12 @@ function main()
     sampRegisterChatCommand('banana', function ()  main_window_state.v = not  main_window_state.v end)
 while true do
     wait(0)
+if status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
+    print('Загрузка обновления завершена.')
+    msg('Обновление завершено!')
+    goupdatestatus = true
+    lua_thread.create(function() wait(500) thisScript():reload() end)
+end
     imgui.Process =  main_window_state.v
     imgui.ShowCursor =  main_window_state.v
 end
