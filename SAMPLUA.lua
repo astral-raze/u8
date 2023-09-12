@@ -24,6 +24,18 @@ local msg = function(text)
 end
 local enco = imgui.ImBool(false)
 
+
+local cfg = inicfg.load({
+   config = {
+      AutoUpdate = 1,
+      CommandAct = 'nema)',
+   }
+})
+
+local msg = function(text)
+    sampAddChatMessage('[ArenaBot] {fff0f5}'..text, 0xFFCD5C5C)
+end
+
 local sizeX, sizeY = getScreenResolution()
 
 local active, status, cd, sd, ac = false, false, false, false, false
