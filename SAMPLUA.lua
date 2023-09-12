@@ -18,7 +18,7 @@ local fonts = renderCreateFont("Arial", 9, 5)
 local main_window_state = imgui.ImBool(false)
 local sizeX, sizeY = getScreenResolution()
 
-
+unpade = false
 
 function autoupdate(json_url, prefix, url)
   local dlstatus = require('moonloader').download_status
@@ -96,7 +96,7 @@ function imgui.OnDrawFrame()
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
       imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
     imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛs')
-    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ SUKA')
+    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ AAAAAAAA')
       imgui.End()
     end
   end
