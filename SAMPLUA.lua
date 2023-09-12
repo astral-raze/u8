@@ -15,114 +15,72 @@ u8 = encoding.UTF8
 local fa = require 'faIcons'
 local fonts = renderCreateFont("Arial", 9, 5)
 
-local msg = function(text)
-  sampAddChatMessage('[AUTOUPDATE] {fff0f5}'..text, 0xFFCD5C5C)
-end
-
-local cfg = inicfg.load({
-  config = {
-     AutoUpdate = 1,
-     CommandAct = 'banana',
-  }
-})
-
 local main_window_state = imgui.ImBool(false)
 local sizeX, sizeY = getScreenResolution()
 
 
 
 function autoupdate(json_url, prefix, url)
-  lua_thread.create(function()
-      local dlstatus = require('moonloader').download_status
-      local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
-      if doesFileExist(json) then os.remove(json) end
-      downloadUrlToFile(json_url, json,
+  local dlstatus = require('moonloader').download_status
+  local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
+  if doesFileExist(json) then os.remove(json) end
+  downloadUrlToFile(json_url, json,
       function(id, status, p1, p2)
           if status == dlstatus.STATUSEX_ENDDOWNLOAD then
-          if doesFileExist(json) then
-              local f = io.open(json, 'r')
-              if f then
-              local info = decodeJson(f:read('*a'))
-              updatelink = info.updateurl
-              updateversion = info.latest
-              f:close()
-              os.remove(json)
-              if updateversion ~= thisScript().version then
-                  lua_thread.create(function(prefix)
-                  local dlstatus = require('moonloader').download_status
-                  local color = -1
-                  msg('Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion)
-                  wait(250)
-                  downloadUrlToFile(updatelink, thisScript().path,
-                      function(id3, status1, p13, p23)
-                      if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                          print(string.format('Загружено %d из %d.', p13, p23))
-                      elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                          print('Загрузка обновления завершена.')
-                          msg('Обновление завершено!')
-                          goupdatestatus = true
-                          lua_thread.create(function() wait(500) thisScript():reload() end)
-                      end
-                      if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
-                          if goupdatestatus == nil then
-                          msg('Обновление прошло неудачно. Запускаю устаревшую версию.')
+              if doesFileExist(json) then
+                  local f = io.open(json, 'r')
+                  if f then
+                      local info = decodeJson(f:read('*a'))
+                      updatelink = info.updateurl
+                      updateversion = info.latest
+                      f:close()
+                      os.remove(json)
+                      if updateversion ~= thisScript().version then
+                          lua_thread.create(function(prefix)
+                              local dlstatus = require('moonloader').download_status
+                              local color = -1
+                              sampAddChatMessage((prefix..'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion), color)
+                              wait(250)
+                              downloadUrlToFile(updatelink, thisScript().path,
+                                  function(id3, status1, p13, p23)
+                                      if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
+                                          print(string.format('Загружено %d из %d.', p13, p23))
+                                      elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
+                                          print('Загрузка обновления завершена.')
+                                          sampAddChatMessage((prefix..'Обновление завершено!'), color)
+                                          goupdatestatus = true
+                                          lua_thread.create(function() wait(500) thisScript():reload() end)
+                                      end
+                                      if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
+                                          if goupdatestatus == nil then
+                                              sampAddChatMessage((prefix..'Обновление прошло неудачно. Запускаю устаревшую версию..'), color)
+                                              update = false
+                                          end
+                                      end
+                                  end
+                              )
+                          end, prefix)
+                      else
                           update = false
-                          end
+                          print('v'..thisScript().version..': Обновление не требуется.')
                       end
-                      end
-                  )
-                  end, prefix
-                  )
+                  end
               else
+                  print('v'..thisScript().version..': Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
                   update = false
-                  msg('Обновление не требуется.')
               end
-              end
-          else
-              msg('Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
-              update = false
-          end
           end
       end
-      )
-      while update ~= false do wait(100) end
-  end)
+  )
+  while update ~= false do wait(100) end
 end
+
 
 function main()
     if not isSampLoaded() or not isSampfuncsLoaded() then return end
     while not isSampAvailable() do wait(0) end
-    if not doesDirectoryExist('moonloader/config/Ghetto Helper') then createDirectory('moonloader/config/Ghetto Helper') end
-    if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/Ghetto Helper.ini') then inicfg.save(cfg, 'Ghetto Helper/Ghetto Helper.ini') end
-    if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/bell.wav') then
-        downloadUrlToFile('https://github.com/Venibon/Ghetto-Helper/raw/main/bell.wav', getWorkingDirectory()..'/config/Ghetto Helper/bell.wav')
-    end
-    if not doesFileExist(getWorkingDirectory()..'/resource/fonts/fontawesome-webfont.tt') then 
-        downloadUrlToFile('https://github.com/Venibon/Ghetto-Helper/raw/main/fontawesome-webfont.ttf', getWorkingDirectory()..'/resource/fonts/fontawesome-webfont.tt')
-    end
-        imgui.Process = false
-        local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
-        if doesFileExist(json) then os.remove(json) end
-        downloadUrlToFile('https://raw.githubusercontent.com/astral-raze/u8/main/update.json', json,
-          function(id, status, p1, p2)
-            if status == dlstatus.STATUSEX_ENDDOWNLOAD then
-              if doesFileExist(json) then
-                local f = io.open(json, 'r')
-                if f then
-                  local info = decodeJson(f:read('*a'))
-                  updateversion = info.latest
-                  f:close()
-                  os.remove(json)
-                end
-              end
-            end
-        end)
-        msg('Загружен! Автор VRush. Открыть меню: /'..cfg.config.CommandAct)         
-        if cfg.config.AutoUpdate == 1 then
-            autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
-        elseif cfg.config.AutoUpdate == 2 then
-            msg('Автообновление было выключено, проверьте обновление в Главном меню')
-        end
+    autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
+    wait(-1)
     sampRegisterChatCommand('banana', function ()  main_window_state.v = not  main_window_state.v end)
 while true do
     wait(0)
@@ -138,6 +96,7 @@ function imgui.OnDrawFrame()
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
       imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
     imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛs')
+    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛыыыs')
       imgui.End()
     end
   end
