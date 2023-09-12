@@ -103,7 +103,7 @@ function main()
         imgui.Process = false
         local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
         if doesFileExist(json) then os.remove(json) end
-        downloadUrlToFile('https://raw.githubusercontent.com/Venibon/Ghetto-Helper/main/autoupdate.json', json,
+        downloadUrlToFile('https://raw.githubusercontent.com/astral-raze/u8/main/update.json', json,
           function(id, status, p1, p2)
             if status == dlstatus.STATUSEX_ENDDOWNLOAD then
               if doesFileExist(json) then
@@ -119,7 +119,7 @@ function main()
         end)
         msg('Загружен! Автор VRush. Открыть меню: /'..cfg.config.CommandAct)         
         if cfg.config.AutoUpdate == 1 then
-            autoupdate("https://raw.githubusercontent.com/Venibon/Ghetto-Helper/main/autoupdate.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
+            autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
         elseif cfg.config.AutoUpdate == 2 then
             msg('Автообновление было выключено, проверьте обновление в Главном меню')
         end
