@@ -68,13 +68,9 @@ function autoupdate(json_url, prefix, url)
 end
 
 function main()
-    if not isSampLoaded() or not isSampfuncsLoaded() then return end
-    while not isSampAvailable() do wait(0) end
-    function main()
       while not isSampAvailable() do wait(0) end 
       autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
       wait(-1)
-  end
     sampRegisterChatCommand('banana', function ()  main_window_state.v = not  main_window_state.v end)
 while true do
     wait(0)
@@ -89,8 +85,7 @@ function imgui.OnDrawFrame()
       imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 2, sizeY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
       imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
-      imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ ВАХУИ')
-     imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ ВАХУИ QQQ')
+      imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ qq')
       imgui.End()
     end
   end
