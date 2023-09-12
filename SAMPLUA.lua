@@ -1,4 +1,4 @@
-script_name("SAMPLUA")
+script_name("Ghetto Helper")
 script_version("1.00")
 
 local imgui = require 'imgui'
@@ -92,10 +92,10 @@ end
 function main()
     if not isSampLoaded() or not isSampfuncsLoaded() then return end
     while not isSampAvailable() do wait(0) end
-    if not doesDirectoryExist('moonloader/config/SAMPLUA') then createDirectory('moonloader/config/SAMPLUA') end
-    if not doesFileExist(getWorkingDirectory()..'/config/SAMPLUA/SAMPLUA.ini') then inicfg.save(cfg, 'SAMPLUA/SAMPLUA.ini') end
-    if not doesFileExist(getWorkingDirectory()..'/config/SAMPLUA/bell.wav') then
-        downloadUrlToFile('https://github.com/Venibon/Ghetto-Helper/raw/main/bell.wav', getWorkingDirectory()..'/config/SAMPLUA/bell.wav')
+    if not doesDirectoryExist('moonloader/config/Ghetto Helper') then createDirectory('moonloader/config/Ghetto Helper') end
+    if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/Ghetto Helper.ini') then inicfg.save(cfg, 'Ghetto Helper/Ghetto Helper.ini') end
+    if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/bell.wav') then
+        downloadUrlToFile('https://github.com/Venibon/Ghetto-Helper/raw/main/bell.wav', getWorkingDirectory()..'/config/Ghetto Helper/bell.wav')
     end
     if not doesFileExist(getWorkingDirectory()..'/resource/fonts/fontawesome-webfont.tt') then 
         downloadUrlToFile('https://github.com/Venibon/Ghetto-Helper/raw/main/fontawesome-webfont.ttf', getWorkingDirectory()..'/resource/fonts/fontawesome-webfont.tt')
