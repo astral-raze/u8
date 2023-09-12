@@ -7,11 +7,6 @@ local encoding = require 'encoding'
 encoding.default = 'CP1251'
 u8 = encoding.UTF8
 
-
-local main_window_state = imgui.ImBool(false)
-local sizeX, sizeY = getScreenResolution()
-
-
 function autoupdate(json_url, prefix, url)
   local dlstatus = require('moonloader').download_status
   local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
@@ -67,10 +62,14 @@ function autoupdate(json_url, prefix, url)
   while update ~= false do wait(100) end
 end
 
+local main_window_state = imgui.ImBool(false)
+local sizeX, sizeY = getScreenResolution()
+
 function main()
-      while not isSampAvailable() do wait(0) end 
-      autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
-      wait(-1)
+    if not isSampLoaded() or not isSampfuncsLoaded() then return end
+    while not isSampAvailable() do wait(0) end
+    autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
+    wait(-1)
     sampRegisterChatCommand('banana', function ()  main_window_state.v = not  main_window_state.v end)
 while true do
     wait(0)
@@ -85,7 +84,7 @@ function imgui.OnDrawFrame()
       imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 2, sizeY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
       imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
-      imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ qq')
+    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
       imgui.End()
     end
   end
