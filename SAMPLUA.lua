@@ -1,5 +1,5 @@
 script_name("SAMPLUA")
-script_version("1.00")
+script_version("1.5")
 
 local imgui = require 'imgui'
 local imadd = require 'imgui_addons'
