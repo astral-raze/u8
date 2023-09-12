@@ -51,21 +51,21 @@ function autoupdate(json_url, prefix, url)
                   lua_thread.create(function(prefix)
                   local dlstatus = require('moonloader').download_status
                   local color = -1
-                  msg('РћР±РЅР°СЂСѓР¶РµРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ. РџС‹С‚Р°СЋСЃСЊ РѕР±РЅРѕРІРёС‚СЊСЃСЏ c '..thisScript().version..' РЅР° '..updateversion)
+                  msg('Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion)
                   wait(250)
                   downloadUrlToFile(updatelink, thisScript().path,
                       function(id3, status1, p13, p23)
                       if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                          print(string.format('Р—Р°РіСЂСѓР¶РµРЅРѕ %d РёР· %d.', p13, p23))
+                          print(string.format('Загружено %d из %d.', p13, p23))
                       elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                          print('Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ Р·Р°РІРµСЂС€РµРЅР°.')
-                          msg('РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ!')
+                          print('Загрузка обновления завершена.')
+                          msg('Обновление завершено!')
                           goupdatestatus = true
                           lua_thread.create(function() wait(500) thisScript():reload() end)
                       end
                       if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                           if goupdatestatus == nil then
-                          msg('РћР±РЅРѕРІР»РµРЅРёРµ РїСЂРѕС€Р»Рѕ РЅРµСѓРґР°С‡РЅРѕ. Р—Р°РїСѓСЃРєР°СЋ СѓСЃС‚Р°СЂРµРІС€СѓСЋ РІРµСЂСЃРёСЋ.')
+                          msg('Обновление прошло неудачно. Запускаю устаревшую версию.')
                           update = false
                           end
                       end
@@ -75,11 +75,11 @@ function autoupdate(json_url, prefix, url)
                   )
               else
                   update = false
-                  msg('РћР±РЅРѕРІР»РµРЅРёРµ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ.')
+                  msg('Обновление не требуется.')
               end
               end
           else
-              msg('РќРµ РјРѕРіСѓ РїСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ. РЎРјРёСЂРёС‚РµСЃСЊ РёР»Рё РїСЂРѕРІРµСЂСЊС‚Рµ СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ РЅР° '..url)
+              msg('Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
               update = false
           end
           end
@@ -117,11 +117,11 @@ function main()
               end
             end
         end)
-        msg('Р—Р°РіСЂСѓР¶РµРЅ! РђРІС‚РѕСЂ VRush. РћС‚РєСЂС‹С‚СЊ РјРµРЅСЋ: /'..cfg.config.CommandAct)         
+        msg('Загружен! Автор VRush. Открыть меню: /'..cfg.config.CommandAct)         
         if cfg.config.AutoUpdate == 1 then
             autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
         elseif cfg.config.AutoUpdate == 2 then
-            msg('РђРІС‚РѕРѕР±РЅРѕРІР»РµРЅРёРµ Р±С‹Р»Рѕ РІС‹РєР»СЋС‡РµРЅРѕ, РїСЂРѕРІРµСЂСЊС‚Рµ РѕР±РЅРѕРІР»РµРЅРёРµ РІ Р“Р»Р°РІРЅРѕРј РјРµРЅСЋ')
+            msg('Автообновление было выключено, проверьте обновление в Главном меню')
         end
     sampRegisterChatCommand('banana', function ()  main_window_state.v = not  main_window_state.v end)
 while true do
@@ -136,8 +136,8 @@ function imgui.OnDrawFrame()
       imgui.SetNextWindowSize(imgui.ImVec2(430, 110), imgui.Cond.FirstUseEver) 
       imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 2, sizeY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
       imgui.Begin('Information for bot', main_window_state, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoScrollbar)
-      imgui.Text(u8'РџР РћР’Р•Р РљРђ РђР’РўРћ РћР‘РќРћР’Р›Р•РќР�РЇ РќРЈ РџР�Р—Р”Р•Р¦ РљРўРћ Р­РўРћРў LUA РџР Р�Р”РЈРњРђР›')
-    imgui.Text(u8'РџР РћР’Р•Р РљРђ РђР’РўРћ РћР‘РќРћР’Р›Р•РќР�РЇ РќРЈ РџР�Р—Р”Р•Р¦ РљРўРћ Р­РўРћРў LUA РџР Р�Р”РЈРњРђР›s')
+      imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛ')
+    imgui.Text(u8'ПРОВЕРКА АВТО ОБНОВЛЕНИЯ НУ ПИЗДЕЦ КТО ЭТОТ LUA ПРИДУМАЛs')
       imgui.End()
     end
   end
