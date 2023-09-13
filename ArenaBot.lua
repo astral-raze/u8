@@ -1,11 +1,10 @@
-script_name("ArenaBot")
-script_version("1.0") --2
-script_author('Astral Raze')
-
 require "lib.moonloader"
 local imgui = require 'imgui'
-local inicfg = require 'inicfg'
+local inicfg = require 'inicfg' --2
 local dlstatus = require('moonloader').download_status
+local encoding = require 'encoding'
+encoding.default = 'CP1251'
+u8 = encoding.UTF8
 local sampev = require 'lib.samp.events'
 local vkeys = require 'vkeys'
 local bNotf, notf = pcall(import, "imgui_notf.lua")
@@ -30,10 +29,10 @@ local getBonePosition = ffi.cast("int (__thiscall*)(void*, float*, int, bool)", 
 local mem = require "memory"
 
 --// *** // *** //--
-whVisible = "all" -- ��� �� �� ���������. ���� �������� � ����������� ����
-optionsCommand = "awh" -- ���� ��: bones - ������ ����� / names - ������ ����, all - �� �����
-KEY = VK_F5 -- ������ ��������� ��
-defaultState = false -- ������ �� ��� ������ ����
+whVisible = "all" -- Мод ВХ по умолчанию. Моды написаны в комментарии ниже
+optionsCommand = "awh" -- Моды ВХ: bones - только кости / names - только ники, all - всё сразу
+KEY = VK_F5 -- Кнопка активации ВХ
+defaultState = false -- Запуск ВХ при старте игры
 --// *** // *** //--
 
 local msg = function(text)
@@ -68,21 +67,21 @@ function autoupdate(json_url, prefix, url)
                     lua_thread.create(function(prefix)
                     local dlstatus = require('moonloader').download_status
                     local color = -1
-                    msg('���������� ����������. ������� ���������� c '..thisScript().version..' �� '..updateversion)
+                    msg('Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion)
                     wait(250)
                     downloadUrlToFile(updatelink, thisScript().path,
                         function(id3, status1, p13, p23)
                         if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                            print(string.format('��������� %d �� %d.', p13, p23))
+                            print(string.format('Загружено %d из %d.', p13, p23))
                         elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                            print('�������� ���������� ���������.')
-                            msg('���������� ���������!')
+                            print('Загрузка обновления завершена.')
+                            msg('Обновление завершено!')
                             goupdatestatus = true
                             lua_thread.create(function() wait(500) thisScript():reload() end)
                         end
                         if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                             if goupdatestatus == nil then
-                            msg('���������� ������ ��������. �������� ���������� ������.')
+                            msg('Обновление прошло неудачно. Запускаю устаревшую версию.')
                             update = false
                             end
                         end
@@ -92,11 +91,11 @@ function autoupdate(json_url, prefix, url)
                     )
                 else
                     update = false
-                    msg('���������� �� ���������.')
+                    msg('Обновление не требуется.')
                 end
                 end
             else
-                msg('�� ���� ��������� ����������. ��������� ��� ��������� �������������� �� '..url)
+                msg('Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
                 update = false
             end
             end
@@ -106,11 +105,11 @@ function autoupdate(json_url, prefix, url)
     end)
 end
 
-local osk = {"����", "dayn", "���", "gay", "gey", "pidoras", "�������", "ebal", "ebal", "�����", "�����", "���", "�����", "�������", "�����", "��� �����", "����� �����", "����� � �����", "�������", "�������", "pidor", "mydak", "mudak", "eblan", "pidr", "����", "dolboeb", "dalbaeb", "dalboeb"}
-function SendMessage(t) return sampAddChatMessage('{696969}[���� ������]:{FFFFFF} '..t, -1) end
+local osk = {"даун", "dayn", "гей", "gay", "gey", "pidoras", "пидорас", "ebal", "ebal", "мудак", "пидор", "чмо", "еблан", "долбоеб", "тупой", "иди нахуй", "пошел нахуй", "пошел в пизду", "далбаеб", "далбаеп", "pidor", "mydak", "mudak", "eblan", "pidr", "пидр", "dolboeb", "dalbaeb", "dalboeb"}
+function SendMessage(t) return sampAddChatMessage('{696969}[Авто Репорт]:{FFFFFF} '..t, -1) end
 function main()
     repeat wait(0) until isSampAvailable()
-    msg("������ ��������. �������� ���� Grisha Isaev :3")
+    msg("Скрипт загружен. Приятной игры Grisha Isaev :3")
     if not doesDirectoryExist('moonloader/config/Ghetto Helper') then createDirectory('moonloader/config/Ghetto Helper') end
     if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/Ghetto Helper.ini') then inicfg.save(cfg, 'Ghetto Helper/Ghetto Helper.ini') end
     if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/bell.wav') then
@@ -136,11 +135,11 @@ function main()
               end
             end
         end)
-        msg('��������! ����� Astral Raze. ������� ����: /'..cfg.config.CommandAct)         
+        msg('Загружен! Автор VRush. Открыть меню: /'..cfg.config.CommandAct)         
         if cfg.config.AutoUpdate == 1 then
             autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
         elseif cfg.config.AutoUpdate == 2 then
-            msg('�������������� ���� ���������, ��������� ���������� � ������� ����')
+            msg('Автообновление было выключено, проверьте обновление в Главном меню')
         end
     sampRegisterChatCommand('bothelp', function ()  enco = not  enco end)
     sampRegisterChatCommand('nick', nick)
@@ -149,29 +148,29 @@ function main()
     sampRegisterChatCommand('ch2', cx2)
     sampRegisterChatCommand('rekl', reklama)
     sampRegisterChatCommand('aopra', function() stals = not stals
-        sampAddChatMessage(stals and '{696969}[���� ����]:{FFFFFF} ������� ��������.' or '{696969}[���� ����]:{FFFFFF} ������� ���������.', -1) end)
+        sampAddChatMessage(stals and '{696969}[Авто Опра]:{FFFFFF} Успешно включена.' or '{696969}[Авто Опра]:{FFFFFF} Успешно отключена.', -1) end)
     sampRegisterChatCommand('all', function()
         lua_thread.create(function ()
-        sampSendChat('/ao ��������� ������. �������� ���-�������� � /vr')
+        sampSendChat('/ao Уважаемые игроки. Работает бот-помощник в /vr')
         wait(1500)
-        sampSendChat('/ao ��� �������� �� �������:')
+        sampSendChat('/ao Бот отвечает на команды:')
         wait(1500)
-        sampSendChat('/ao ��� �����, ��� ���, ��� ����, ��� �� ��, ��� �� ��, ��� ��, ��� ����, ��� ��, ��� ������, ��� ����')
+        sampSendChat('/ao бот спавн, бот нрг, бот флип, бот тп аб, бот тп цр, бот хп, бот люкс, бот цб, бот лопата, бот слап')
         wait(1500)
-        sampSendChat('/ao ������ ��� �������� ���� �� ���� ��������������� �������!')
+        sampSendChat('/ao Желаем Вам приятной игры от всех администраторов проекта!')
         wait(1500)
-        sampSendChat('/a �� ����� � �� ��� ����!! ���������� �����!')
+        sampSendChat('/a НЕ СТОИМ В АЗ БЕЗ ДЕЛА!! ЗАНИМАЕМСЯ ДЕЛОМ!')
         wait(1500)
         sampSendChat('/a 1-6 /OT + /EVENTMENU..')
         wait(1500)
-        sampSendChat('/a ..- 7-8 LVL - �����')
+        sampSendChat('/a ..- 7-8 LVL - ФОРУМ')
     end)
 end)
-    sampRegisterChatCommand('autorep', function() autos = not autos SendMessage(autos and '�������' or '��������', -1) end)   
+    sampRegisterChatCommand('autorep', function() autos = not autos SendMessage(autos and 'Включен' or 'Выключен', -1) end)   
     sampRegisterChatCommand(optionsCommand, function(param)
 		if param == "bones" then whVisible = param; nameTagOff()
 		elseif param == "names" or param == "all" then whVisible = param if not nameTag then nameTagOn() end
-		else sampAddChatMessage("������� ���������� �����: {CCCCFF}names{4444FF}/{CCCCFF}bones{4444FF}/{CCCCFF}all", 0xFF4444FF) end
+		else sampAddChatMessage("Введите корректный режим: {CCCCFF}names{4444FF}/{CCCCFF}bones{4444FF}/{CCCCFF}all", 0xFF4444FF) end
 	end)
 	while not sampIsLocalPlayerSpawned() do wait(100) end
 	if defaultState and not nameTag then nameTagOn() end
@@ -195,10 +194,10 @@ end)
             sampProcessChatInput('/rec 0')
         end
         if testCheat('4') then
-            sampSendChat('/ao ��������� ������. �������� ���-�������� � /vr')
-            sampSendChat('/ao ��� �������� �� �������:')
-            sampSendChat('/ao ��� �����, ��� ���, ��� ����, ��� �� ��, ��� �� ��, ��� ��, ��� ����, ��� ��, ��� ������, ��� ����')
-            sampSendChat('/ao ������ ��� �������� ���� �� ���� ��������������� �������!')
+            sampSendChat('/ao Уважаемые игроки. Работает бот-помощник в /vr')
+            sampSendChat('/ao Бот отвечает на команды:')
+            sampSendChat('/ao бот спавн, бот нрг, бот флип, бот тп аб, бот тп цр, бот хп, бот люкс, бот цб, бот лопата, бот слап')
+            sampSendChat('/ao Желаем Вам приятной игры от всех администраторов проекта!')
         end
         if testCheat('5') then
             sampProcessChatInput('/botname')
@@ -297,7 +296,7 @@ function goKeyPressed(keyID)
 end
 
 function sampev.onShowDialog(dialogId, style, title, button1, button2, text)
-    if text:find('�� ���� ������ ���') then
+    if text:find('Мы рады видеть вас') then
         return false
     end
 end
@@ -315,17 +314,17 @@ end
 
 function calc(params)
     if params == '' then
-        sampAddChatMessage('�������������: /calc [������]', -1)
+        sampAddChatMessage('Использование: /calc [пример]', -1)
     else
         local func = load('return ' .. params)
         if func == nil then
-            sampAddChatMessage('������.', -1)
+            sampAddChatMessage('Ошибка.', -1)
         else
             local bool, res = pcall(func)
             if bool == false or type(res) ~= 'number' then
-                sampAddChatMessage('������.', -1)
+                sampAddChatMessage('Ошибка.', -1)
             else
-                sampAddChatMessage('���������: ' .. res, -1)
+                sampAddChatMessage('Результат: ' .. res, -1)
                 sampSendChat(res)
             end
         end
@@ -455,11 +454,11 @@ function getCapitalLetter(text, mode)
     local b = tostring(text)
 
     if mode == 1 then
-        string_world = '���������������������������������'
+        string_world = 'ЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ'
     elseif mode == 2 then
         string_world = 'QWERTYUIOPASDFGHJKLZXCVBNM'
     elseif mode == 3 then
-        string_world = '���������������������������������QWERTYUIOPASDFGHJKLZXCVBNM'
+        string_world = 'ЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮQWERTYUIOPASDFGHJKLZXCVBNM'
     end
 
     for i = 1, #b do
@@ -477,16 +476,16 @@ end
 
 function sampev.onServerMessage(color, text)
     text = text:gsub('{......}', '')
-    if text:find('%[�����%] ��������� . FULLDOSTUP') or text:find('%[���������%]: �� ������� ���� ���������') or text:find('%[���������%]: �� ������ ������ ������ � ���� ����������� ���������') or text:find('%[�����%] ������') or text:find('%[�����%] ������� ��������') then
+    if text:find('%[АКЦИЯ%] БЕСПЛАТНО . FULLDOSTUP') or text:find('%[Подсказка%]: На сервере есть инвентарь') or text:find('%[Подсказка%]: Вы можете задать вопрос в нашу техническую поддержку') or text:find('%[Важно%] Хочешь') or text:find('%[Важно%] Введите промокод') then
         sampSendChat('/apanel')
         return false
     end
-    if text:find('����� ���������� �� Arizona Role Play!') then
-        sampAddChatMessage('������, Grisha_Isaev!', 0xFF6347)
+    if text:find('Добро пожаловать на Arizona Role Play!') then
+        sampAddChatMessage('Привет, Grisha_Isaev!', 0xFF6347)
         return false
     end
     if autos then
-        if text:find('%[������%]') or text:find('%[������%]') or text:find('������') or text:find('/ot') or text:find('ot') then
+        if text:find('%[Жалоба%]') or text:find('%[Репорт%]') or text:find('Репорт') or text:find('/ot') or text:find('ot') then
             if not sampIsDialogActive() then
                 lua_thread.create(function ()
                 sampSendChat('/ot')
@@ -497,16 +496,16 @@ function sampev.onServerMessage(color, text)
         end
     end
     lua_thread.create(function()
-        if text:find('���� ������! ��� ���� ����?') then
+        if text:find('Всем привет! Как Ваши дела?') then
             sampSendChat('/ot')
 
-            sampSendDialogResponse(32, 1, 1, '�����������! � ��� - ��� ������������. �������� ���� <3')
+            sampSendDialogResponse(32, 1, 1, 'Приветствую! У нас - все замечательно. Приятной игры <3')
         end
     end)
     lua_thread.create(function()
-        ----------------------------- ���� --------------------------------
-        --[[if text:find('%[.+%] .+%[.+%]: ��� ���� .+ .+ .+') then
-            id, num, act, num2 = text:match('%[.+%] .+%[(.+)%]: ��� ���� (.+) (.+) (.+)')
+        ----------------------------- Реши --------------------------------
+        --[[if text:find('%[.+%] .+%[.+%]: бот реши .+ .+ .+') then
+            id, num, act, num2 = text:match('%[.+%] .+%[(.+)%]: бот реши (.+) (.+) (.+)')
             num = tonumber(num)
             num2 = tonumber(num2)
             if act == "+" then
@@ -518,13 +517,13 @@ function sampev.onServerMessage(color, text)
             elseif act == "/" then
                 ret = num / num2
             else
-                sampAddChatMessage("���� �� ������ - "..act, -1)
+                sampAddChatMessage("Знак не найден - "..act, -1)
             end
             --sampProcessChatInput('/calc '..a..' '..b..' '..c)
             sampSendChat('/pm '..id..' 0 '..ret)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� ���� .+.+.+') then
-            id, num, act, num2 = text:match('%[.+%] .+%[(.+)%]: ��� ���� (.+)(.+)(.+)')
+        if text:find('%[.+%] .+%[.+%]: бот реши .+.+.+') then
+            id, num, act, num2 = text:match('%[.+%] .+%[(.+)%]: бот реши (.+)(.+)(.+)')
             num = tonumber(num)
             num2 = tonumber(num2)
             if act == "+" then
@@ -536,7 +535,7 @@ function sampev.onServerMessage(color, text)
             elseif act == "/" then
                 ret = num / num2
             else
-                sampAddChatMessage("���� �� ������ - "..act, -1)
+                sampAddChatMessage("Знак не найден - "..act, -1)
             end
             --sampProcessChatInput('/calc '..a..' '..b..' '..c)
             sampSendChat('/pm '..id..' 0 '..ret)
@@ -545,96 +544,96 @@ function sampev.onServerMessage(color, text)
         --if text:find('%[.+%] .+%[.+%]: .+') then
             --playernick, playerid, playertext = text:match('%[.+%] (.+)%[(.+)%]: (.+)')
             --if getCapitalLetter(playertext, 3) >= 4 then
-            --    sampSendChat('/mute '..playerid..' 30 caps /vr [����. ����: ' .. getCapitalLetter(playertext, 3)..']')
-            --    sampSendChat('/a ����� '..playernick..' ������������� ������� ��������� �� caps [����. ����: ' .. getCapitalLetter(playertext, 3)..'].')
+            --    sampSendChat('/mute '..playerid..' 30 caps /vr [загл. букв: ' .. getCapitalLetter(playertext, 3)..']')
+            --    sampSendChat('/a Игрок '..playernick..' автоматически получил наказание за caps [загл. букв: ' .. getCapitalLetter(playertext, 3)..'].')
             --end
         --end
-        ----------------------------- ����������� ---------------------------
+        ----------------------------- Оскорбления ---------------------------
         --[[for k, v in ipairs(osk) do
             if text:find('%[.+%] .+%[.+%]: '..v..'') then
                 id = text:match('%[.+%] .+%[(.+)%]: '..v..'')
                 sampSendChat('/mute '..id..' 20 vf')
-                sampSendChat('/pm '..id..' 0 ���� ��� ��� ����� �����, ����� �������� ���� ������ � ��: vk.com/myhich_myxa')
+                sampSendChat('/pm '..id..' 0 Если мут был выдан ложно, прошу оспорить этот момент в ВК: vk.com/myhich_myxa')
             end
         end
         for k, v in ipairs(osk) do
             if text:find('%[.+%] .+%[.+%]: .+ '..v..'') then
                 id = text:match('%[.+%] .+%[(.+)%]: .+ '..v..'')
-                sampSendChat('/mute '..id..' 60 ���������')
-                sampSendChat('/pm '..id..' 0 ���� ��� ��� ����� �����, ����� �������� ���� ������ � ��: vk.com/myhich_myxa')
+                sampSendChat('/mute '..id..' 60 неадекват')
+                sampSendChat('/pm '..id..' 0 Если мут был выдан ложно, прошу оспорить этот момент в ВК: vk.com/myhich_myxa')
             end
         end
         for k, v in ipairs(osk) do
             if text:find('%[.+%] .+%[.+%]: .+ '..v..' .+') then
                 id = text:match('%[.+%] .+%[(.+)%]: .+ '..v..' .+')
-                sampSendChat('/mute '..id..' 60 ���������')
-                sampSendChat('/pm '..id..' 0 ���� ��� ��� ����� �����, ����� �������� ���� ������ � ��: vk.com/myhich_myxa')
+                sampSendChat('/mute '..id..' 60 неадекват')
+                sampSendChat('/pm '..id..' 0 Если мут был выдан ложно, прошу оспорить этот момент в ВК: vk.com/myhich_myxa')
             end
         end
         for k, v in ipairs(osk) do
             if text:find('%[.+%] .+%[.+%]: '..v..' .+') then
                 id = text:match('%[.+%] .+%[(.+)%]: '..v..' .+')
-                sampSendChat('/mute '..id..' 60 ���������')
-                sampSendChat('/pm '..id..' 0 ���� ��� ��� ����� �����, ����� �������� ���� ������ � ��: vk.com/myhich_myxa')
+                sampSendChat('/mute '..id..' 60 неадекват')
+                sampSendChat('/pm '..id..' 0 Если мут был выдан ложно, прошу оспорить этот момент в ВК: vk.com/myhich_myxa')
             end
         end]]
-        ----------------------------- ���� ----------------------------------
-        if text:find('%[.+%] .+%[.+%]: ��� ����') then
-            id = text:match('%[.+%] .+%[(.+)%]: ��� ����')
+        ----------------------------- Слап ----------------------------------
+        if text:find('%[.+%] .+%[.+%]: бот слап') then
+            id = text:match('%[.+%] .+%[(.+)%]: бот слап')
             wait(500)
             sampSendChat('/slap '..id..' 1')
         end
-        ----------------------------- ������ --------------------------------
-        if text:find('%[.+%] .+%[.+%]: .+ ������') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ������')
+        ----------------------------- Лопата --------------------------------
+        if text:find('%[.+%] .+%[.+%]: .+ лопату') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ лопату')
             wait(500)
             sampSendChat('/givegun '..id..' 6 1')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ ������') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ������')
+        if text:find('%[.+%] .+%[.+%]: .+ лопата') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ лопата')
             wait(500)
             sampSendChat('/givegun '..id..' 6 1')
         end
-        if text:find('%[.+%] .+%[.+%]: ��� ��� ������') then
-            id = text:match('%[.+%] .+%[(.+)%]: ��� ��� ������')
+        if text:find('%[.+%] .+%[.+%]: бот дай лопату') then
+            id = text:match('%[.+%] .+%[(.+)%]: бот дай лопату')
             wait(500)
             sampSendChat('/givegun '..id..' 6 1')
         end
         ----------------------------- Spawn --------------------------------
-        if text:find('%[.+%] .+%[.+%]: .+ �����') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ �����')
+        if text:find('%[.+%] .+%[.+%]: .+ спавн') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ спавн')
             wait(500)
             sampSendChat('/spplayer '..id)
         end
-        if text:find('%[.+%] .+%[.+%]: �����') then
-            id = text:match('%[.+%] .+%[(.+)%]: �����')
+        if text:find('%[.+%] .+%[.+%]: спавн') then
+            id = text:match('%[.+%] .+%[(.+)%]: спавн')
             wait(500)
             sampSendChat('/spplayer '..id)
         end
         ----------------------------- Car ---------------------------------
-        if text:find('%[.+%] .+%[.+%]: .+ ������') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ������')
+        if text:find('%[.+%] .+%[.+%]: .+ машину') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ машину')
             wait(500)
             sampSendChat('/plveh '..id..' 411 0')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ ���') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ���')
+        if text:find('%[.+%] .+%[.+%]: .+ кар') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ кар')
             wait(500)
             sampSendChat('/plveh '..id..' 411 0')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ ����') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ����')
+        if text:find('%[.+%] .+%[.+%]: .+ люкс') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ люкс')
             wait(500)
             sampSendChat('/plveh '..id..' 3201 0')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ �����') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ �����')
+        if text:find('%[.+%] .+%[.+%]: .+ тачку') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ тачку')
             wait(500)
             sampSendChat('/plveh '..id..' 3201 0')
         end
         ----------------------------- NRG ---------------------------------
-        if text:find('%[.+%] .+%[.+%]:.+ ���') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ���')
+        if text:find('%[.+%] .+%[.+%]:.+ нрг') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ нрг')
             wait(500)
             sampSendChat('/plveh '..id..' 522 1')
         end
@@ -649,14 +648,14 @@ function sampev.onServerMessage(color, text)
             sampSendChat('/plveh '..id..' 522 1')
         end
         ----------------------------- flip --------------------------------
-        if text:find('%[.+%] .+%[.+%]: .+ ����') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ����')
+        if text:find('%[.+%] .+%[.+%]: .+ флип') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ флип')
             wait(500)
             sampSendChat('/flip '..id)
         end
-        ----------------------------- �� �� -------------------------------
-        if text:find('%[.+%] .+%[.+%]: ��� �� �� ��') then
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� �� ��')
+        ----------------------------- ТП АБ -------------------------------
+        if text:find('%[.+%] .+%[.+%]: бот тп на аб') then
+            id = text:match('%[.+%] .+%[(.+)%]: бот тп на аб')
             wait(500)
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
@@ -667,10 +666,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� �� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот на аб') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот на аб')
             wait(500)
             bot = true
             wait(500)
@@ -679,10 +678,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� �� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот тп аб') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот тп аб')
             wait(500)
             bot = true
             wait(500)
@@ -691,10 +690,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот аб') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот аб')
             wait(500)
             bot = true 
             wait(500)
@@ -703,11 +702,11 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        ----------------------------- �� �� -------------------------------
-        if text:find('%[.+%] .+%[.+%]: ��� �� �� ��') then
+        ----------------------------- ТП ЦР -------------------------------
+        if text:find('%[.+%] .+%[.+%]: бот тп на цр') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот тп на цр')
             wait(500)
             bot1 = true
             wait(500)
@@ -716,10 +715,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� �� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот на цр') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот на цр')
             wait(500)
             bot1 = true
             wait(500)
@@ -728,10 +727,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� �� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот тп цр') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот тп цр')
             wait(500)
             bot1 = true
             wait(500)
@@ -740,10 +739,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот цр') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот цр')
             wait(500)
             bot1 = true
             wait(500)
@@ -752,11 +751,11 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        ----------------------------- �� �� -------------------------------
-        if text:find('%[.+%] .+%[.+%]: ��� �� �� ��') then
+        ----------------------------- ТП ЦБ -------------------------------
+        if text:find('%[.+%] .+%[.+%]: бот тп на цб') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот тп на цб')
             wait(500)
             bot2 = true
             wait(500)
@@ -765,10 +764,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� �� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот тп цб') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� �� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот тп цб')
             wait(500)
             bot2 = true
             wait(500)
@@ -777,10 +776,10 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        if text:find('%[.+%] .+%[.+%]: ��� ��') then
+        if text:find('%[.+%] .+%[.+%]: бот цб') then
             local inta = getActiveInterior()
             freezeCharPosition(PLAYER_PED, true)
-            id = text:match('%[.+%] .+%[(.+)%]: ��� ��')
+            id = text:match('%[.+%] .+%[(.+)%]: бот цб')
             wait(500)
             bot2 = true
             wait(500)
@@ -789,176 +788,176 @@ function sampev.onServerMessage(color, text)
             sampSendInteriorChange(inta)
             freezeCharPosition(PLAYER_PED, false)
         end
-        ----------------------------- ��� �� ------------------------------
-        if text:find('%[.+%] .+%[.+%]: .+ ��� ��') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ��� ��')
+        ----------------------------- бот хп ------------------------------
+        if text:find('%[.+%] .+%[.+%]: .+ дай хп') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ дай хп')
             wait(500)
             sampSendChat('/sethp '..id..' 100')
         end
-        if text:find('%[.+%] .+%[.+%]: ��� ��') then
-            id = text:match('%[.+%] .+%[(.+)%]: ��� ��')
+        if text:find('%[.+%] .+%[.+%]: бот хп') then
+            id = text:match('%[.+%] .+%[(.+)%]: бот хп')
             wait(500)
             sampSendChat('/sethp '..id..' 100')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ ����� ��') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ����� ��')
+        if text:find('%[.+%] .+%[.+%]: .+ выдай хп') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ выдай хп')
             wait(500)
             sampSendChat('/sethp '..id..' 100')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ �� ��') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ �� ��')
+        if text:find('%[.+%] .+%[.+%]: .+ пж хп') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ пж хп')
             wait(500)
             sampSendChat('/sethp '..id..' 100')
         end
         --------------------------------------------PROTHEE-------------------------------------
-        if text:find('%[.+%] .+%[.+%]: .+ ������') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ������')
+        if text:find('%[.+%] .+%[.+%]: .+ унфриз') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ унфриз')
             wait(500)
             sampSendChat('/unfreeze '..id)
         end
-        if text:find('%[.+%] .+%[.+%]: .+ �������') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ �������')
+        if text:find('%[.+%] .+%[.+%]: .+ маверик') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ маверик')
             wait(500)
             sampSendChat('/plveh '..id.. ' 487 0')
         end
-           if text:find('%[A | ���. ���������%] (.+)%[(.+)%]: ��� ������� �����') then
-            id  = text:match('%[A | ���. ���������%] (.+)%[(.+)%]: ��� ������� �����')
-            wait(500) -- [A | {FF0000}���. ���������{99CC00}] Astral_Raze[23]: 1
-            sampSendChat('/a ����� ���� �������!!')
+           if text:find('%[A | Зам. Создателя%] (.+)%[(.+)%]: бот подарок хитку') then
+            id  = text:match('%[A | Зам. Создателя%] (.+)%[(.+)%]: бот подарок хитку')
+            wait(500) -- [A | {FF0000}Зам. Создателя{99CC00}] Astral_Raze[23]: 1
+            sampSendChat('/a Хиток лови подарок!!')
             wait(1500)
             sampSendChat('/hp 6 0')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ �����') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ �����')
+        if text:find('%[.+%] .+%[.+%]: .+ шамал') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ шамал')
             wait(500)
             sampSendChat('/plveh '..id.. ' 519 0')
         end
-        if text:find('%[.+%] .+%[.+%]: .+ ������') then
-            id = text:match('%[.+%] .+%[(.+)%]: .+ ������')
+        if text:find('%[.+%] .+%[.+%]: .+ броник') then
+            id = text:match('%[.+%] .+%[(.+)%]: .+ броник')
             wait(500)
             sampSendChat('/setarmour '..id.. ' 100')
         end
-        if text:find('%[A.+%] (.+)%[(.+)%]: .+ ������� ��') then
-            id = text:match('%[A.+%] (.+)%[(.+)%]: .+ ������� ��')
+        if text:find('%[A.+%] (.+)%[(.+)%]: .+ правила рп') then
+            id = text:match('%[A.+%] (.+)%[(.+)%]: .+ правила рп')
             wait(500)
-            sampSendChat('/a ������� �������: �� - 60, �� �� - 120')
+            sampSendChat('/a Правила сервера: дм - 60, дм зз - 120')
             wait(500)
-            sampSendChat(' ���� �� - 160, ���� �� � �� - 190')
+            sampSendChat(' масс дм - 160, масс дм в зз - 190')
             wait(500)
-            sampSendChat(' �� - 40, �� � �� - 60/(����), �� �� - 90')
+            sampSendChat(' дб - 40, дб в зз - 60/(варн), дб зз - 90')
             wait(500)
-            sampSendChat(' ���� �� � �� - 120, ��/��/�� - ����')
+            sampSendChat(' масс дб в зз - 120, ск/пг/тк - варн')
             wait(500)
-            sampSendChat(' ������ - �����, ���� - 120 ������')
+            sampSendChat(' рванка - банип, читы - 120 джайла')
         end
-        if text:find('%[A.+%] (.+)%[(.+)%]: .+ ������� ����') then
-            id = text:match('%[A.+%] (.+)%[(.+)%]: .+ ������� ����')
+        if text:find('%[A.+%] (.+)%[(.+)%]: .+ правила чата') then
+            id = text:match('%[A.+%] (.+)%[(.+)%]: .+ правила чата')
             wait(500)
-            sampSendChat('/a ��� � (���) - 30, ���� - 30, ���� - 30')
+            sampSendChat('/a оск в (оос) - 30, капс - 30, флуд - 30')
             wait(500)
-            sampSendChat('/a ��� ��� - 300, ���� ��� - 300, ��� ��� - 30(ban)')
+            sampSendChat('/a оск адм - 300, упом род - 300, оск род - 30(ban)')
         end
-        if text:find("������������� (.+)%[(.+)%] ������� ������ Astral_Raze%[(.+)%] �� 30 ����. �������: .+") then  
-            local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ Astral_Raze%[(.+)%] �� 30 ����. �������: .+")
+        if text:find("Администратор (.+)%[(.+)%] забанил игрока Astral_Raze%[(.+)%] на 30 дней. Причина: .+") then  
+            local nick, id  = text:match("Администратор (.+)%[(.+)%] забанил игрока Astral_Raze%[(.+)%] на 30 дней. Причина: .+")
             wait(2000)
             sampSendChat('/makeadmin '..id..' 0')
         end
         ----------------------------DM---------------------------------------------
-        if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��") then  
-            local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��")
+        if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: дм") then  
+            local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: дм")
             wait(2000)
-            sampSendChat('/awarn '..id..' ���')
+            sampSendChat('/awarn '..id..' НВН')
             wait(200)
             setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
         end
-        if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��") then  
-            local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��")
+        if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: ДМ") then  
+            local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: ДМ")
             wait(2000)
-            sampSendChat('/awarn '..id..' ���')
+            sampSendChat('/awarn '..id..' НВН')
             wait(200)
             setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
         end
-        if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: dm") then  
-            local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: dm")
+        if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: dm") then  
+            local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: dm")
             wait(2000)
-            sampSendChat('/awarn '..id..' ���')
+            sampSendChat('/awarn '..id..' НВН')
             wait(200)
             setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
         end
-        if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: DM") then  
-            local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: DM")
+        if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: DM") then  
+            local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: DM")
             wait(2000)
-            sampSendChat('/awarn '..id..' ���')
+            sampSendChat('/awarn '..id..' НВН')
             wait(200)
             setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
         end
         ---------------------------------------------------SNYAT3|3----------------------------------------------
-        if text:find("������������� (.+)%[(.+)%] ����� ������� �������������� (.+)%[(.+)%] %[3/3%] �������: .+") then  
-            local nick, id, sds, sts  = text:match("������������� (.+)%[(.+)%] ����� ������� �������������� (.+)%[(.+)%] %[3/3%] �������: .+")
+        if text:find("Администратор (.+)%[(.+)%] выдал выговор администратору (.+)%[(.+)%] %[3/3%] Причина: .+") then  
+            local nick, id, sds, sts  = text:match("Администратор (.+)%[(.+)%] выдал выговор администратору (.+)%[(.+)%] %[3/3%] Причина: .+")
             wait(2000) 
-            sampSendChat('/jail '..sts..' 150 ����')
+            sampSendChat('/jail '..sts..' 150 Снят')
         end
         -----------------------------------------DB--------------------------------------------------------------
-        if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��") then  
-            local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��")
+        if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: дб") then  
+            local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: дб")
             wait(2000)
-            sampSendChat('/awarn '..id..' ���')
+            sampSendChat('/awarn '..id..' НВН')
             wait(200)
             setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
     end
-    if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��") then  
-        local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: ��")
+    if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: ДБ") then  
+        local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: ДБ")
         wait(2000)
-        sampSendChat('/awarn '..id..' ���')
+        sampSendChat('/awarn '..id..' НВН')
         wait(200)
         setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
     end
-    if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: db") then  
-        local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: db")
+    if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: db") then  
+        local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: db")
         wait(2000)
-        sampSendChat('/awarn '..id..' ���')
+        sampSendChat('/awarn '..id..' НВН')
         wait(200)
         setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
     end
-    if text:find("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: DB") then  
-        local nick, id  = text:match("������������� (.+)%[(.+)%] ������� ������ (.+)%[(.+)%] � �������� �� 30 �����. �������: DB")
+    if text:find("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: DB") then  
+        local nick, id  = text:match("Администратор (.+)%[(.+)%] посадил игрока (.+)%[(.+)%] в деморган на 30 минут. Причина: DB")
         wait(2000)
-        sampSendChat('/awarn '..id..' ���')
+        sampSendChat('/awarn '..id..' НВН')
         wait(200)
         setVirtualKeyDown(119, true) wait(10) setVirtualKeyDown(119, false)
     end
-    ----------------------------------------------���� ����----------------------------------------------
+    ----------------------------------------------АВТО ОПРА----------------------------------------------
     if stals then
-    if text:find("(.+)%[(.+)%] ����� ��� ID: (%d+)(.+)") then  
-        local nick, id, dom  = text:match("(.+)%[(.+)%] ����� ��� ID: (%d+)(.+)")
+    if text:find("(.+)%[(.+)%] купил дом ID: (%d+)(.+)") then  
+        local nick, id, dom  = text:match("(.+)%[(.+)%] купил дом ID: (%d+)(.+)")
         wait(2000)
-        sampSendChat('/jail '..id.. ' 3000 ���� ��� '..dom)
+        sampSendChat('/jail '..id.. ' 3000 Опра дом '..dom)
 end
-if text:find("(.+)%[(.+)%] ����� ������ ID: (%d+)(.+)") then  
-    local nick, id, biz  = text:match("(.+)%[(.+)%] ����� ������ ID: (%d+)(.+)")
+if text:find("(.+)%[(.+)%] купил бизнес ID: (%d+)(.+)") then  
+    local nick, id, biz  = text:match("(.+)%[(.+)%] купил бизнес ID: (%d+)(.+)")
     wait(2000)
-    sampSendChat('/jail '..id.. ' 3000 ���� ������ '..biz)
+    sampSendChat('/jail '..id.. ' 3000 Опра бизнес '..biz)
 end
 ----------------------------------------MUTE OSYJDAUUU-------------------------------------------
 if text:find('%[.+%] .+%[.+%]: mq') then
     id = text:match('%[.+%] .+%[(.+)%]: mq')
     wait(500)
-    sampSendChat('/mute '..id..' 300 ���������� ������')
+    sampSendChat('/mute '..id..' 300 упоминание родных')
 end
 if text:find('%[.+%] .+%[.+%]: MQ') then
     id = text:match('%[.+%] .+%[(.+)%]: MQ')
     wait(500)
-    sampSendChat('/mute '..id..' 300 ���������� ������')
+    sampSendChat('/mute '..id..' 300 упоминание родных')
 end
 if text:find('%[.+%] .+%[.+%]: mq .+') then
     id = text:match('%[.+%] .+%[(.+)%]: mq .+')
     wait(500)
-    sampSendChat('/mute '..id..' 300 ���������� ������')
+    sampSendChat('/mute '..id..' 300 упоминание родных')
 end
 if text:find('%[.+%] .+%[.+%]: MQ .+') then
     id = text:match('%[.+%] .+%[(.+)%]: MQ .+')
     wait(500)
-    sampSendChat('/mute '..id..' 300 ���������� ������')
+    sampSendChat('/mute '..id..' 300 упоминание родных')
 end
 end
 end)
@@ -1015,7 +1014,7 @@ end
 
 function sampev.onShowDialog(dialogId, dialogStyle, dialogTitle, okButtonText, cancelButtonText, dialogText)
 	if dialogId == 2 and akk_password then
-		if dialogText:find('����� ����������') then
+		if dialogText:find('Добро пожаловать') then
 			sampSendDialogResponse(2, 1, 65535, akk_password)
 			return false
 		end
@@ -1027,7 +1026,7 @@ function onReceiveRpc(id,bitStream)
         style = raknetBitStreamReadInt8(bitStream)
         str = raknetBitStreamReadInt8(bitStream)
         title = raknetBitStreamReadString(bitStream, str)
-        if title:find("�����������") then sampSendDialogResponse(dialogId,1,0,admin_password) end
+        if title:find("Авторизация") then sampSendDialogResponse(dialogId,1,0,admin_password) end
     end
 end
 
@@ -1035,11 +1034,11 @@ function cchas()
     lua_thread.create(function ()
         sampSendChat('/givechass')
         wait(1500)
-        sampSendChat('/ao ������� ������� /cchas')
+        sampSendChat('/ao Включил команду /cchas')
         wait(10000)
         sampSendChat('/givechass')
         wait(1500)
-        sampSendChat('/ao �������� ������� /cchas')
+        sampSendChat('/ao Выключил команду /cchas')
     end)
 end
 
@@ -1047,31 +1046,31 @@ function cx2()
     lua_thread.create(function ()
         sampSendChat('/givechass')
         wait(1500)
-        sampSendChat('/ao ������� ������� /cchas �� 5 ������ (�1)')
+        sampSendChat('/ao Включил команду /cchas на 5 секунд (х1)')
         wait(5000)
         sampSendChat('/givechass')
         wait(1500)
-        sampSendChat('/ao �������� /cchas. (�1) ')
+        sampSendChat('/ao Выключил /cchas. (х1) ')
         wait(1500)
         sampSendChat('/givechass')
         wait(1500)
-        sampSendChat('/ao ������� ������� /cchas �� 5 ������ (�2)')
+        sampSendChat('/ao Включил команду /cchas на 5 секунд (х2)')
         wait(5000)
         sampSendChat('/givechass')
         wait(1500)
-        sampSendChat('/ao �������� /cchas. (�2)')
+        sampSendChat('/ao Выключил /cchas. (х2)')
     end)
 end
 
 
 function reklama()
     lua_thread.create(function ()
-        sampSendChat("/ao ��������� ������, ���������� ��� ��� Telegram �����, � ������� ��������� �������� ���������."); wait(2000)
-            sampSendChat("/ao ������ ��� �� �������� ��������� ���������� � ������ ����, ������������� � t.me/arena_rp!"); wait(5000)
-            sampSendChat("/ao ��������� ������, � ��� ���� ������ ��, � ������� ��������� �������� ���������."); wait(2000)
-            sampSendChat("/ao ��������������� � �������� ���������� ������� ������� � vk.com/arp_666!"); wait(5000)
-            sampSendChat("/ao ��������� ������, ���������, ��� ��� ��������, ����������� ���������, ������ ������������,"); wait(2000)
-            sampSendChat("/ao ������ ��������� �� ���� ������, �������������� �������� ����� ��� ����� � forum.rp-arena.ru!")
+        sampSendChat("/ao Уважаемые игроки, напоминаем про наш Telegram канал, в котором регулярно проходят розыгрыши."); wait(2000)
+            sampSendChat("/ao Именно тут мы зачастую рассылаем уникальные и редкие коды, присоединяйся – t.me/arena_rp!"); wait(5000)
+            sampSendChat("/ao Уважаемые игроки, у нас есть группа ВК, в которой регулярно проходят розыгрыши."); wait(2000)
+            sampSendChat("/ao Присоединяйтесь к дружному сообществу игроков сервера – vk.com/arp_666!"); wait(5000)
+            sampSendChat("/ao Уважаемые игроки, напоминаю, что все амнистии, обжалования наказаний, подача опровержений,"); wait(2000)
+            sampSendChat("/ao подачи заявлений на пост лидера, администратора проходят через наш форум – forum.rp-arena.ru!")
     end)
 end
 
@@ -1083,7 +1082,7 @@ function addcode()
 		prize = random(100, 300)
 		sampSendChat(string.format("/addcode %s %d", code, act))
         wait(2000)
-        sampSendChat(string.format("/ao ������ ��� %s [���������: %d] � ������ %d AZ-RUB.", code, act, prize))
+        sampSendChat(string.format("/ao Создал код %s [Активаций: %d] с призом %d AZ-RUB.", code, act, prize))
 		wait(15000)
 		sampSendChat(string.format("/dellcode %s", code))
     end)
@@ -1096,7 +1095,7 @@ function CodeAdm()
 		prize = random(100, 300)
 		sampSendChat(string.format("/addcode %s %d", code, act))
         wait(2000)
-        sampSendChat(string.format("/a ������ ��� %s [���������: %d] � ������ %d AZ-RUB.", code, act, prize))
+        sampSendChat(string.format("/a Создал код %s [Активаций: %d] с призом %d AZ-RUB.", code, act, prize))
 		wait(15000)
 		sampSendChat(string.format("/dellcode %s", code))
     end)
