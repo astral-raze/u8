@@ -1,4 +1,4 @@
-script_name("ArenaBot")
+script_name("ArenaBot") --3
 script_version("1.2") --1
 script_author('Astral Raze')
 
@@ -71,7 +71,7 @@ function autoupdate(json_url, prefix, url)
                     lua_thread.create(function(prefix)
                     local dlstatus = require('moonloader').download_status
                     local color = -1
-                    msg('Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion)
+                    msg(u8'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion)
                     wait(250)
                     downloadUrlToFile(updatelink, thisScript().path,
                         function(id3, status1, p13, p23)
@@ -85,7 +85,7 @@ function autoupdate(json_url, prefix, url)
                         end
                         if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                             if goupdatestatus == nil then
-                            msg('Обновление прошло неудачно. Запускаю устаревшую версию.')
+                            msg(u8'Обновление прошло неудачно. Запускаю устаревшую версию.')
                             update = false
                             end
                         end
@@ -95,11 +95,11 @@ function autoupdate(json_url, prefix, url)
                     )
                 else
                     update = false
-                    msg('Обновление не требуется.')
+                    msg(u8'Обновление не требуется.')
                 end
                 end
             else
-                msg('Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
+                msg(u8'Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
                 update = false
             end
             end
@@ -139,11 +139,11 @@ function main()
               end
             end
         end)
-        msg('Загружен! Автор Astral Raze. Открыть меню: /'..cfg.config.CommandAct)         
+        msg(u8'Загружен! Автор Astral Raze. Открыть меню: /'..cfg.config.CommandAct)         
         if cfg.config.AutoUpdate == 1 then
             autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
         elseif cfg.config.AutoUpdate == 2 then
-            msg('Автообновление было выключено, проверьте обновление в Главном меню')
+            msg(u8'Автообновление было выключено, проверьте обновление в Главном меню')
         end
     sampRegisterChatCommand('bothelp', function ()  enco = not  enco end)
     sampRegisterChatCommand('nick', nick)
