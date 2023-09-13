@@ -20,7 +20,7 @@ local stals = false
 local admin_password = '3916_Myhich'
 local akk_password = 'Dvvegegeg5dfc5'
 local msg = function(text)
-    sampAddChatMessage('{696969}[ArenaBot]: {FFFFFF}'..text, 0xFFCD5C5C)
+    sampAddChatMessage('{696969}[Arena-Bot]: {FFFFFF}'..text, 0xFFCD5C5C)
 end
 local enco = imgui.ImBool(false)
 
