@@ -1,5 +1,5 @@
 script_name("ArenaBot")
-script_version("1.1") --1
+script_version("1.2") --1
 script_author('Astral Raze')
 
 require "lib.moonloader"
