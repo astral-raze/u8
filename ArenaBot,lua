@@ -1,14 +1,11 @@
 script_name("ArenaBot")
-script_version("1.0") --1
+script_version("1.0") --2
 script_author('Astral Raze')
 
 require "lib.moonloader"
 local imgui = require 'imgui'
 local inicfg = require 'inicfg'
 local dlstatus = require('moonloader').download_status
-local encoding = require 'encoding'
-encoding.default = 'CP1251'
-u8 = encoding.UTF8
 local sampev = require 'lib.samp.events'
 local vkeys = require 'vkeys'
 local bNotf, notf = pcall(import, "imgui_notf.lua")
