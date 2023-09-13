@@ -113,7 +113,7 @@ local osk = {"даун", "dayn", "гей", "gay", "gey", "pidoras", "пидор�
 function SendMessage(t) return sampAddChatMessage('{696969}[Авто Репорт]:{FFFFFF} '..t, -1) end
 function main()
     repeat wait(0) until isSampAvailable()
-    msg("Скрипт загружен. Приятной игры Grisha Isaev :3")
+    msg(u8"Скрипт загружен. Приятной игры Grisha Isaev :3")
     if not doesDirectoryExist('moonloader/config/Ghetto Helper') then createDirectory('moonloader/config/Ghetto Helper') end
     if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/Ghetto Helper.ini') then inicfg.save(cfg, 'Ghetto Helper/Ghetto Helper.ini') end
     if not doesFileExist(getWorkingDirectory()..'/config/Ghetto Helper/bell.wav') then
