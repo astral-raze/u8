@@ -24,18 +24,6 @@ local msg = function(text)
 end
 local enco = imgui.ImBool(false)
 
-
-local cfg = inicfg.load({
-   config = {
-      AutoUpdate = 1,
-      CommandAct = 'nema)',
-   }
-})
-
-local msg = function(text)
-    sampAddChatMessage('[ArenaBot] {fff0f5}'..text, 0xFFCD5C5C)
-end
-
 local sizeX, sizeY = getScreenResolution()
 
 local active, status, cd, sd, ac = false, false, false, false, false
@@ -50,6 +38,17 @@ optionsCommand = "awh" -- ���� ��: bones - ������ ��
 KEY = VK_F5 -- ������ ��������� ��
 defaultState = false -- ������ �� ��� ������ ����
 --// *** // *** //--
+
+local msg = function(text)
+    sampAddChatMessage('[ArenaBot] {fff0f5}'..text, 0xFFCD5C5C)
+end
+
+local cfg = inicfg.load({
+    config = {
+       AutoUpdate = 1,
+       CommandAct = 'banana',
+    }
+ })
 
 
 function autoupdate(json_url, prefix, url)
@@ -72,7 +71,7 @@ function autoupdate(json_url, prefix, url)
                     lua_thread.create(function(prefix)
                     local dlstatus = require('moonloader').download_status
                     local color = -1
-                    msg(u8'���������� ����������. ������� ���������� c '..thisScript().version..' �� '..updateversion)
+                    msg('���������� ����������. ������� ���������� c '..thisScript().version..' �� '..updateversion)
                     wait(250)
                     downloadUrlToFile(updatelink, thisScript().path,
                         function(id3, status1, p13, p23)
@@ -80,13 +79,13 @@ function autoupdate(json_url, prefix, url)
                             print(string.format('��������� %d �� %d.', p13, p23))
                         elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
                             print('�������� ���������� ���������.')
-                            msg(u8'���������� ���������!')
+                            msg('���������� ���������!')
                             goupdatestatus = true
                             lua_thread.create(function() wait(500) thisScript():reload() end)
                         end
                         if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                             if goupdatestatus == nil then
-                            msg(u8'���������� ������ ��������. �������� ���������� ������.')
+                            msg('���������� ������ ��������. �������� ���������� ������.')
                             update = false
                             end
                         end
@@ -96,11 +95,11 @@ function autoupdate(json_url, prefix, url)
                     )
                 else
                     update = false
-                    msg(u8'���������� �� ���������.')
+                    msg('���������� �� ���������.')
                 end
                 end
             else
-                msg(u8'�� ���� ��������� ����������. ��������� ��� ��������� �������������� �� '..url)
+                msg('�� ���� ��������� ����������. ��������� ��� ��������� �������������� �� '..url)
                 update = false
             end
             end
@@ -140,11 +139,11 @@ function main()
               end
             end
         end)
-        msg(u8'��������! ����� VRush. ������� ����: /'..cfg.config.CommandAct)         
+        msg('��������! ����� Astral Raze. ������� ����: /'..cfg.config.CommandAct)         
         if cfg.config.AutoUpdate == 1 then
             autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
         elseif cfg.config.AutoUpdate == 2 then
-            msg(u8'�������������� ���� ���������, ��������� ���������� � ������� ����')
+            msg('�������������� ���� ���������, ��������� ���������� � ������� ����')
         end
     sampRegisterChatCommand('bothelp', function ()  enco = not  enco end)
     sampRegisterChatCommand('nick', nick)
