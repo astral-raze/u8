@@ -1,3 +1,7 @@
+script_name("ArenaBot")
+script_version("1.0")
+script_author('Astral Raze')
+
 require "lib.moonloader"
 local imgui = require 'imgui'
 local inicfg = require 'inicfg' --2
@@ -135,7 +139,7 @@ function main()
               end
             end
         end)
-        msg('Загружен! Автор VRush. Открыть меню: /'..cfg.config.CommandAct)         
+        msg('Загружен! Автор Astral Raze. Открыть меню: /'..cfg.config.CommandAct)         
         if cfg.config.AutoUpdate == 1 then
             autoupdate("https://raw.githubusercontent.com/astral-raze/u8/main/update.json", '['..string.upper(thisScript().name)..']: ', "https://www.blast.hk/threads/138165/")
         elseif cfg.config.AutoUpdate == 2 then
