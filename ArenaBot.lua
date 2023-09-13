@@ -579,8 +579,8 @@ function sampev.onServerMessage(color, text)
             end
         end]]
         ----------------------------- Слап ----------------------------------
-        if text:find('%[.+%] .+%[.+%]: бот слап') then
-            id = text:match('%[.+%] .+%[(.+)%]: бот слап')
+        if text:find(u8:decode('%[.+%] .+%[.+%]: бот слап')) then
+            id = text:match(u8:decode('%[.+%] .+%[.+%]: бот слап'))
             wait(500)
             sampSendChat('/slap '..id..' 1')
         end
