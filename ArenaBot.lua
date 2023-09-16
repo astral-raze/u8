@@ -15,7 +15,7 @@ local dlstatus = require('moonloader').download_status
 
 function update()
   local fpath = os.getenv('TEMP') .. '\\testing_version.json' -- куда будет качаться наш файлик для сравнения версии
-  downloadUrlToFile('https://gist.githubusercontent.com/atiZZZ/7507f7d4a51dc036bd275b96cc7bed38/raw/a78a8ef401c553c4309efd6a80075f56567c6c93/atiz', fpath, function(id, status, p1, p2) -- ссылку на ваш гитхаб где есть строчки которые я ввёл в теме или любой другой сайт
+  downloadUrlToFile('https://api.jsonbin.io/v3/b/6505d6798d92e126ae6d97f4', fpath, function(id, status, p1, p2) -- ссылку на ваш гитхаб где есть строчки которые я ввёл в теме или любой другой сайт
     if status == dlstatus.STATUS_ENDDOWNLOADDATA then
     local f = io.open(fpath, 'r') -- открывает файл
     if f then
