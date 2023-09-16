@@ -1,4 +1,4 @@
-script_versiov('1.0')
+script_versiov('2')
 
 local imgui = require 'imgui'
 local encoding = require 'encoding'
